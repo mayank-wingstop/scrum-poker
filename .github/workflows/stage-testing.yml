@@ -1,7 +1,7 @@
-name: Stage Gate — Trigger Testing Agent
+name: Stage Gate - Trigger Testing Agent
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -11,6 +11,7 @@ on:
 jobs:
   trigger-testing:
     name: Create Testing Issue for Feature PR
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       issues: write

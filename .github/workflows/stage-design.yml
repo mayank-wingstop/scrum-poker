@@ -1,13 +1,14 @@
-name: Stage Gate — Trigger Design Agent
+name: Stage Gate - Trigger Design Agent
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
   push:
     branches: [main]
 
 jobs:
   trigger-design:
     name: Create Design Issue for Merged Feature
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       issues: write
