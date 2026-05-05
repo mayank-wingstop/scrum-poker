@@ -8,6 +8,7 @@ on:
 jobs:
   trigger-design:
     name: Create Design Issue for Merged Feature
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       issues: write

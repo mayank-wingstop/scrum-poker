@@ -8,6 +8,7 @@ on:
 jobs:
   trigger-architecture:
     name: Create Architecture Issue for Approved Design
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       issues: write
