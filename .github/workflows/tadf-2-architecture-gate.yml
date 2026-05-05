@@ -1,4 +1,4 @@
-name: Stage Gate Architecture
+name: TADF Architecture Gate
 
 on:
   push:
@@ -52,7 +52,7 @@ Read and follow the agent definition in .github/agents/architecture-specialist.a
 Open a pull request with your output. Human approval required before merge.
 
 ---
-Auto-created by TADF stage-gate workflow on merge of ${FILE}."
+Auto-created by TADF stage-gate on merge of ${FILE}."
 
             gh issue create \
               --repo "$REPO" \

@@ -1,4 +1,4 @@
-name: Stage Gate Testing
+name: TADF Testing Gate
 
 on:
   push:
@@ -71,7 +71,7 @@ Read and follow the agent definition in .github/agents/testing-specialist.agent.
 Open a pull request with all outputs. Human QA approval required before final merge.
 
 ---
-Auto-created by TADF stage-gate workflow on PR #${PR_NUMBER}."
+Auto-created by TADF stage-gate on PR #${PR_NUMBER}."
 
           gh issue create \
             --repo "$REPO" \

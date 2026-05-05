@@ -1,4 +1,4 @@
-name: Stage Gate Implementation Plan
+name: TADF Implementation Plan Gate
 
 on:
   push:
@@ -52,7 +52,7 @@ Read and follow the agent definition in .github/agents/implementation-planner.ag
 Open a pull request with your output. Human approval required before merge.
 
 ---
-Auto-created by TADF stage-gate workflow on merge of ${FILE}."
+Auto-created by TADF stage-gate on merge of ${FILE}."
 
             gh issue create \
               --repo "$REPO" \

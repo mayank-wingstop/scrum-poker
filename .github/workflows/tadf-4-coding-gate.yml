@@ -1,4 +1,4 @@
-name: Stage Gate Coding
+name: TADF Coding Gate
 
 on:
   push:
@@ -54,7 +54,7 @@ PR title must be: feat(${FEATURE_ID}): [description]
 CI must pass before requesting review. Human approval required before merge.
 
 ---
-Auto-created by TADF stage-gate workflow on merge of ${FILE}."
+Auto-created by TADF stage-gate on merge of ${FILE}."
 
             gh issue create \
               --repo "$REPO" \
