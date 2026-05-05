@@ -1,36 +1,51 @@
 name: Stage Gate — Trigger Testing Agent
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'tests/**'
     types: [opened, synchronize, reopened]
 
 jobs:
   trigger-testing:
     name: Create Testing Issue for Feature PR
     runs-on: ubuntu-latest
-    if: startsWith(github.event.pull_request.title, 'feat(')
     permissions:
       issues: write
+      contents: read
       pull-requests: read
 
     steps:
-      - name: Extract Feature ID
-        id: extract
+      - name: Detect feature PR or merged coding commit
+        id: detect
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          EVENT: ${{ github.event_name }}
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          FEATURE_ID=$(echo "$PR_TITLE" | grep -oP '(?<=feat\()F-\d+(?=\))')
+          FEATURE_ID=""
+
+          if [ "$EVENT" = "pull_request" ]; then
+            # Fired on a PR — check if it's a coding PR
+            FEATURE_ID=$(echo "$PR_TITLE" | grep -oP '(?<=feat\()F-\d+(?=\))' || true)
+            if [ -z "$FEATURE_ID" ]; then
+              echo "PR title does not match feat(F-XXX) pattern — nothing to do."
+            fi
+          else
+            # Fired on a push to main — check if coding files were merged
+            FEATURE_ID=$(git diff --name-only HEAD~1 HEAD -- 'src/**' 'tests/**' 2>/dev/null | head -1 | true)
+            echo "Push event — not a PR context, skipping."
+            FEATURE_ID=""
+          fi
+
           echo "feature_id=$FEATURE_ID" >> "$GITHUB_OUTPUT"
 
       - name: Create Testing Issue
-        if: steps.extract.outputs.feature_id != ''
+        if: steps.detect.outputs.feature_id != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          FEATURE_ID: ${{ steps.extract.outputs.feature_id }}
+          FEATURE_ID: ${{ steps.detect.outputs.feature_id }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
@@ -49,7 +64,7 @@ Read and follow the agent definition in .github/agents/testing-specialist.agent.
 3. Write test plan: specs/5_test-plan/${FEATURE_ID}.MD
 4. Update tests/** for new feature behavior
 5. Run full test suite and capture output
-6. For UI features: start the app, capture screenshots for all key states, save to specs/7_test-results/images/${FEATURE_ID}/
+6. For UI features: start the app, capture screenshots, save to specs/7_test-results/images/${FEATURE_ID}/
 7. Extract actual CSS token values from the running application
 8. Write results with Design-Decision Traceability table: specs/7_test-results/${FEATURE_ID}.MD
 9. Issue GO / NO-GO recommendation

@@ -3,8 +3,6 @@ name: Stage Gate — Trigger Design Agent
 on:
   push:
     branches: [main]
-    paths:
-      - 'specs/1_features/F-*.MD'
 
 jobs:
   trigger-design:
@@ -22,8 +20,12 @@ jobs:
       - name: Detect new feature files
         id: detect
         run: |
-          # Collect added feature files as space-separated list
           CHANGED=$(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'specs/1_features/F-*.MD' | tr '\n' ' ' | xargs)
+          if [ -z "$CHANGED" ]; then
+            echo "No new feature files in this push — nothing to do."
+          else
+            echo "New feature files detected: $CHANGED"
+          fi
           echo "changed_files=$CHANGED" >> "$GITHUB_OUTPUT"
 
       - name: Create Design Issues
