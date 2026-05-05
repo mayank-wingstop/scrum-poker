@@ -10,7 +10,6 @@ on:
 jobs:
   trigger-testing:
     name: Create Testing Issue for Feature PR
-    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       issues: write
