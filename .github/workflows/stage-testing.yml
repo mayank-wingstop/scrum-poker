@@ -1,0 +1,81 @@
+name: Stage Gate Testing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  trigger-testing:
+    name: Create Testing Issue for Feature PR
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Detect feature PR or merged coding commit
+        id: detect
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          FEATURE_ID=""
+
+          if [ "$EVENT" = "pull_request" ]; then
+            FEATURE_ID=$(echo "$PR_TITLE" | grep -oP '(?<=feat\()F-\d+(?=\))' || true)
+            if [ -z "$FEATURE_ID" ]; then
+              echo "PR title does not match feat(F-XXX) pattern - nothing to do."
+            fi
+          else
+            echo "Push event - skipping (testing triggered by PR events only)."
+            FEATURE_ID=""
+          fi
+
+          echo "feature_id=$FEATURE_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Create Testing Issue
+        if: steps.detect.outputs.feature_id != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          FEATURE_ID: ${{ steps.detect.outputs.feature_id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          BODY="## Testing Stage Task
+
+**Feature:** ${FEATURE_ID}
+**PR:** ${PR_URL} (#${PR_NUMBER})
+**Agent:** testing-specialist (see .github/agents/testing-specialist.agent.md)
+
+### Instructions
+Read and follow the agent definition in .github/agents/testing-specialist.agent.md exactly.
+
+**Required steps (from agent definition):**
+1. Read specs/TESTING.MD first for canonical commands and thresholds
+2. Read feature specs: specs/1_features/${FEATURE_ID}.MD, specs/2_design/${FEATURE_ID}.MD, specs/3_architecture/${FEATURE_ID}.MD, specs/4_implementation-plan/${FEATURE_ID}.MD
+3. Write test plan: specs/5_test-plan/${FEATURE_ID}.MD
+4. Update tests/** for new feature behavior
+5. Run full test suite and capture output
+6. For UI features: start the app, capture screenshots, save to specs/7_test-results/images/${FEATURE_ID}/
+7. Extract actual CSS token values from the running application
+8. Write results with Design-Decision Traceability table: specs/7_test-results/${FEATURE_ID}.MD
+9. Issue GO / NO-GO recommendation
+10. Update specs/INDEX.MD
+
+Open a pull request with all outputs. Human QA approval required before final merge.
+
+---
+Auto-created by TADF stage-gate workflow on PR #${PR_NUMBER}."
+
+          gh issue create \
+            --repo "$REPO" \
+            --title "[${FEATURE_ID}] Testing Stage" \
+            --assignee "mayank-wingstop" \
+            --label "tadf-stage-7" \
+            --body "$BODY"

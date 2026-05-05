@@ -1,0 +1,65 @@
+name: Stage Gate Coding
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  trigger-coding:
+    name: Create Coding Issue for Approved Implementation Plan
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect merged implementation plan files
+        id: detect
+        run: |
+          CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'specs/4_implementation-plan/F-*.MD' | tr '\n' ' ' | xargs)
+          if [ -z "$CHANGED" ]; then
+            echo "No new implementation plan files in this push - nothing to do."
+          else
+            echo "Implementation plan files detected: $CHANGED"
+          fi
+          echo "changed_files=$CHANGED" >> "$GITHUB_OUTPUT"
+
+      - name: Create Coding Issues
+        if: steps.detect.outputs.changed_files != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          CHANGED: ${{ steps.detect.outputs.changed_files }}
+        run: |
+          for FILE in $CHANGED; do
+            FEATURE_ID=$(basename "$FILE" .MD)
+            BODY="## Coding Stage Task
+
+**Feature:** ${FEATURE_ID}
+**Agent:** coding-specialist (see .github/agents/coding-specialist.agent.md)
+
+### Instructions
+Read and follow the agent definition in .github/agents/coding-specialist.agent.md exactly.
+
+**Primary input:** specs/4_implementation-plan/${FEATURE_ID}.MD
+**Supporting context:** specs/SYSTEM.MD, specs/DESIGN.MD, specs/ARCHITECTURE.MD
+**Writes:** src/**, tests/** (when required), updates specs/INDEX.MD
+
+PR title must be: feat(${FEATURE_ID}): [description]
+CI must pass before requesting review. Human approval required before merge.
+
+---
+Auto-created by TADF stage-gate workflow on merge of ${FILE}."
+
+            gh issue create \
+              --repo "$REPO" \
+              --title "[${FEATURE_ID}] Coding Stage" \
+              --assignee "mayank-wingstop" \
+              --label "tadf-stage-5" \
+              --body "$BODY"
+          done
