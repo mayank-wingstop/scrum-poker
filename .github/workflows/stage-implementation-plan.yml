@@ -1,6 +1,7 @@
 name: Stage Gate — Trigger Implementation Planner
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [main]
 
