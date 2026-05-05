@@ -1,7 +1,6 @@
-name: Stage Gate - Trigger Implementation Planner
+name: TADF Implementation Plan Gate
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
 
@@ -24,7 +23,7 @@ jobs:
         run: |
           CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'specs/3_architecture/F-*.MD' | tr '\n' ' ' | xargs)
           if [ -z "$CHANGED" ]; then
-            echo "No new architecture files in this push — nothing to do."
+            echo "No new architecture files in this push - nothing to do."
           else
             echo "Architecture files detected: $CHANGED"
           fi
@@ -53,7 +52,7 @@ Read and follow the agent definition in .github/agents/implementation-planner.ag
 Open a pull request with your output. Human approval required before merge.
 
 ---
-Auto-created by TADF stage-gate workflow on merge of ${FILE}."
+Auto-created by TADF stage-gate on merge of ${FILE}."
 
             gh issue create \
               --repo "$REPO" \

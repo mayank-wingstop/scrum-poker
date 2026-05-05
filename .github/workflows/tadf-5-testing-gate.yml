@@ -1,7 +1,6 @@
-name: Stage Gate - Trigger Testing Agent
+name: TADF Testing Gate
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -28,15 +27,12 @@ jobs:
           FEATURE_ID=""
 
           if [ "$EVENT" = "pull_request" ]; then
-            # Fired on a PR — check if it's a coding PR
             FEATURE_ID=$(echo "$PR_TITLE" | grep -oP '(?<=feat\()F-\d+(?=\))' || true)
             if [ -z "$FEATURE_ID" ]; then
-              echo "PR title does not match feat(F-XXX) pattern — nothing to do."
+              echo "PR title does not match feat(F-XXX) pattern - nothing to do."
             fi
           else
-            # Fired on a push to main — check if coding files were merged
-            FEATURE_ID=$(git diff --name-only HEAD~1 HEAD -- 'src/**' 'tests/**' 2>/dev/null | head -1 | true)
-            echo "Push event — not a PR context, skipping."
+            echo "Push event - skipping (testing triggered by PR events only)."
             FEATURE_ID=""
           fi
 
@@ -75,7 +71,7 @@ Read and follow the agent definition in .github/agents/testing-specialist.agent.
 Open a pull request with all outputs. Human QA approval required before final merge.
 
 ---
-Auto-created by TADF stage-gate workflow on PR #${PR_NUMBER}."
+Auto-created by TADF stage-gate on PR #${PR_NUMBER}."
 
           gh issue create \
             --repo "$REPO" \
