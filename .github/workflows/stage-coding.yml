@@ -1,0 +1,58 @@
+name: Stage Gate — Trigger Coding Agent
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'specs/4_implementation-plan/F-*.MD'
+
+jobs:
+  trigger-coding:
+    name: Create Coding Issue for Approved Implementation Plan
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect merged implementation plan files
+        id: detect
+        run: |
+          CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'specs/4_implementation-plan/F-*.MD')
+          echo "changed_files=$CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Create Coding Issues
+        if: steps.detect.outputs.changed_files != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          for FILE in ${{ steps.detect.outputs.changed_files }}; do
+            FEATURE_ID=$(basename "$FILE" .MD)
+            gh issue create \
+              --repo "$REPO" \
+              --title "[$FEATURE_ID] Coding Stage" \
+              --assignee "@copilot" \
+              --label "tadf-stage-5,coding" \
+              --body "## Coding Stage Task
+
+**Feature:** $FEATURE_ID
+**Agent:** \`coding-specialist\` (defined in \`.github/agents/coding-specialist.agent.md\`)
+
+### Instructions
+Read and follow the agent definition in \`.github/agents/coding-specialist.agent.md\` exactly.
+
+**Primary input:** \`specs/4_implementation-plan/$FEATURE_ID.MD\`
+**Supporting context:** \`specs/SYSTEM.MD\`, \`specs/DESIGN.MD\`, \`specs/ARCHITECTURE.MD\`
+**Writes:** \`src/**\`, \`tests/**\` (when required), updates \`specs/INDEX.MD\`
+
+PR title: \`feat($FEATURE_ID): [description]\`
+CI must pass before requesting review. Human approval required before merge.
+
+---
+*Auto-created by TADF stage-gate workflow.*"
+          done

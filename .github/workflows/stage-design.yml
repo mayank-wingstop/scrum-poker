@@ -1,0 +1,56 @@
+name: Stage Gate — Trigger Design Agent
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'specs/1_features/F-*.MD'
+
+jobs:
+  trigger-design:
+    name: Create Design Issue for Merged Feature
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect new feature files
+        id: detect
+        run: |
+          CHANGED=$(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'specs/1_features/F-*.MD')
+          echo "changed_files=$CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Create Design Issues
+        if: steps.detect.outputs.changed_files != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          for FILE in ${{ steps.detect.outputs.changed_files }}; do
+            FEATURE_ID=$(basename "$FILE" .MD)
+            gh issue create \
+              --repo "$REPO" \
+              --title "[$FEATURE_ID] Design Stage" \
+              --assignee "@copilot" \
+              --label "tadf-stage-2,design" \
+              --body "## Design Stage Task
+
+**Feature:** $FEATURE_ID
+**Agent:** \`design-specialist\` (defined in \`.github/agents/design-specialist.agent.md\`)
+
+### Instructions
+Read and follow the agent definition in \`.github/agents/design-specialist.agent.md\` exactly.
+
+**Reads:** \`specs/SYSTEM.MD\`, \`specs/DESIGN.MD\`, \`$FILE\`
+**Writes:** \`specs/2_design/$FEATURE_ID.MD\`, updates \`specs/DESIGN.MD\`, updates \`specs/INDEX.MD\`
+
+Open a pull request with your output. Human review and approval required before merge.
+
+---
+*Auto-created by TADF stage-gate workflow.*"
+          done

@@ -1,0 +1,30 @@
+{
+  "name": "@scrum-poker/server",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/start.ts",
+    "build": "tsc",
+    "start": "node dist/start.js",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.16.0",
+    "uuid": "^9.0.0",
+    "express-rate-limit": "^7.1.5"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/ws": "^8.5.10",
+    "@types/uuid": "^9.0.7",
+    "@types/jest": "^29.5.11",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "supertest": "^6.3.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.0"
+  }
+}

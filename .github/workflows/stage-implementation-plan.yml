@@ -1,0 +1,56 @@
+name: Stage Gate — Trigger Implementation Planner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'specs/3_architecture/F-*.MD'
+
+jobs:
+  trigger-impl-plan:
+    name: Create Implementation Plan Issue
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect merged architecture files
+        id: detect
+        run: |
+          CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'specs/3_architecture/F-*.MD')
+          echo "changed_files=$CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Create Implementation Plan Issues
+        if: steps.detect.outputs.changed_files != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          for FILE in ${{ steps.detect.outputs.changed_files }}; do
+            FEATURE_ID=$(basename "$FILE" .MD)
+            gh issue create \
+              --repo "$REPO" \
+              --title "[$FEATURE_ID] Implementation Plan Stage" \
+              --assignee "@copilot" \
+              --label "tadf-stage-4,implementation-plan" \
+              --body "## Implementation Plan Stage Task
+
+**Feature:** $FEATURE_ID
+**Agent:** \`implementation-planner\` (defined in \`.github/agents/implementation-planner.agent.md\`)
+
+### Instructions
+Read and follow the agent definition in \`.github/agents/implementation-planner.agent.md\` exactly.
+
+**Reads:** \`specs/1_features/$FEATURE_ID.MD\`, \`specs/2_design/$FEATURE_ID.MD\`, \`specs/3_architecture/$FEATURE_ID.MD\`
+**Writes:** \`specs/4_implementation-plan/$FEATURE_ID.MD\`, updates \`specs/INDEX.MD\`
+
+Open a pull request. Human approval required before merge.
+
+---
+*Auto-created by TADF stage-gate workflow.*"
+          done

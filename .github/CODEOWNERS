@@ -1,0 +1,24 @@
+# CODEOWNERS — Scrum Poker
+# Replace placeholders with real GitHub usernames before enabling branch protection.
+
+# Global spec files
+# specs/SYSTEM.MD           @tech-lead
+# specs/ARCHITECTURE.MD     @tech-lead @architect
+# specs/DESIGN.MD           @tech-lead @designer
+
+# Stage 2: Design specs
+# specs/2_design/           @designer @product-owner
+
+# Stage 3: Architecture specs
+# specs/3_architecture/     @architect @tech-lead
+
+# Stage 4: Implementation plans
+# specs/4_implementation-plan/ @tech-lead
+
+# Stage 5: Coding
+# src/                      @tech-lead @engineer
+
+# Stage 7: Testing
+# tests/                    @qa-lead
+# specs/5_test-plan/        @qa-lead
+# specs/7_test-results/     @qa-lead
