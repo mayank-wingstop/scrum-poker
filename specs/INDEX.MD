@@ -23,7 +23,7 @@
 | Feature ID | Title | Stage 1: Feature | Stage 2: Design | Stage 3: Architecture | Stage 4: Impl. Plan | Stage 5: Coding | Stage 6: Review | Stage 7: Testing |
 |-----------|-------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | F-000 | Project Bootstrap | ✅ | ⬜ | ⬜ | ✅ | ✅ | ✅ | ✅ |
-| F-001 | Session Creation | 🔍 | ✅ | ✅ | ✅ | 🔍 | ⬜ | ⬜ |
+| F-001 | Session Creation | 🔍 | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ |
 | F-002 | Participant Join Flow | 🔍 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | F-003 | Voting Room Layout | 🔍 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | F-004 | Voting: Cast, Change & Reveal | 🔍 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -63,7 +63,7 @@
 | F-001 | Stage 2: Design | 🔍 | tadf-design | specs/2_design/F-001.MD complete — awaiting human review |
 | F-001 | Stage 3: Architecture | ✅ | Human | Approved |
 | F-001 | Stage 4: Implementation Plan | ✅ | Human | Approved |
-| F-001 | Stage 5: Coding | 🔍 | tadf-coding | src/** and tests/** updated — awaiting human review |
+| F-001 | Stage 5: Coding | ✅ | Human | Approved |
 | F-002 | Stage 1: Feature | 🔍 | Agent | Feature definition written — awaiting human approval |
 | F-003 | Stage 1: Feature | 🔍 | Agent | Feature definition written — awaiting human approval |
 | F-004 | Stage 1: Feature | 🔍 | Agent | Feature definition written — awaiting human approval |
