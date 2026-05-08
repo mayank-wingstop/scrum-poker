@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 
-// Stub Zustand store — will be populated in feature-specific coding stages
 interface SessionState {
   sessionId: string | null;
   participantId: string | null;
+  setSession: (sessionId: string, participantId: string) => void;
 }
 
-const useSessionStore = create<SessionState>(() => ({
+const useSessionStore = create<SessionState>((set) => ({
   sessionId: null,
   participantId: null,
+  setSession: (sessionId, participantId) => set({ sessionId, participantId }),
 }));
 
 export default useSessionStore;
