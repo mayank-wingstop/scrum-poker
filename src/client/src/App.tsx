@@ -1,13 +1,20 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   return (
-    <div data-testid="app-root" className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900">Scrum Poker</h1>
-        <p className="mt-2 text-lg text-gray-500">Ready to plan.</p>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route
+        path="/session/:sessionId"
+        element={
+          <div data-testid="session-room-stub" style={{ padding: '2rem' }}>
+            <p>Session room — coming in F-002/F-003</p>
+          </div>
+        }
+      />
+    </Routes>
   );
 }
 

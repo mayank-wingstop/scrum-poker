@@ -6,6 +6,10 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      '/sessions': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
       '/api': 'http://localhost:3001',
       '/ws': {
         target: 'ws://localhost:3001',
@@ -23,8 +27,6 @@ export default defineConfig({
       exclude: [
         'src/test-setup.ts',
         'src/main.tsx',
-        // Stub files — no logic yet; covered in feature-specific stages
-        'src/store/sessionStore.ts',
       ],
       thresholds: {
         lines: 80,

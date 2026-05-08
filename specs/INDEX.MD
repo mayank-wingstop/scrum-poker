@@ -23,7 +23,7 @@
 | Feature ID | Title | Stage 1: Feature | Stage 2: Design | Stage 3: Architecture | Stage 4: Impl. Plan | Stage 5: Coding | Stage 6: Review | Stage 7: Testing |
 |-----------|-------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | F-000 | Project Bootstrap | ✅ | ⬜ | ⬜ | ✅ | ✅ | ✅ | ✅ |
-| F-001 | Session Creation | 🔍 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| F-001 | Session Creation | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | F-002 | Participant Join Flow | 🔍 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | F-003 | Voting Room Layout | 🔍 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | F-004 | Voting: Cast, Change & Reveal | 🔍 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -59,7 +59,13 @@
 | F-000 | Stage 5: Coding | ✅ | Human | Approved |
 | F-000 | Stage 6: Code Review | ✅ | Human | Approved |
 | F-000 | Stage 7: Testing | ✅ | Human | Approved — F-000 complete |
-| F-001 | Stage 1: Feature | 🔍 | Agent | Feature definition written — awaiting human approval |
+| F-001 | Stage 1: Feature | ✅ | Human | Approved |
+| F-001 | Stage 2: Design | ✅ | Human | Approved |
+| F-001 | Stage 3: Architecture | ✅ | Human | Approved |
+| F-001 | Stage 4: Implementation Plan | ✅ | Human | Approved |
+| F-001 | Stage 5: Coding | ✅ | Human | Approved |
+| F-001 | Stage 6: Code Review | ✅ | Human | Approved |
+| F-001 | Stage 7: Testing | ✅ | Human | Approved — F-001 complete |
 | F-002 | Stage 1: Feature | 🔍 | Agent | Feature definition written — awaiting human approval |
 | F-003 | Stage 1: Feature | 🔍 | Agent | Feature definition written — awaiting human approval |
 | F-004 | Stage 1: Feature | 🔍 | Agent | Feature definition written — awaiting human approval |
@@ -73,6 +79,7 @@
 ## Notes
 
 - F-000 skips Stages 2 (Design) and 3 (Architecture) — bootstrap has no UI and all architectural decisions are already in `specs/ARCHITECTURE.MD`.
-- F-001 through F-008 are all at Stage 1 (🔍) — awaiting human review and approval before any Stage 2 (Design) work begins.
+- F-001 is complete — all 7 stages approved and merged to main.
+- F-002 through F-008 are all at Stage 1 (🔍) — awaiting human review and approval before any Stage 2 (Design) work begins.
 - Features should be approved and worked sequentially: F-001 → F-002 → F-003 → F-004 → F-005. F-006, F-007, F-008 can be parallelised after the core voting loop (F-001–F-005) is complete.
 - Each coding stage (Stage 5) creates a `feature/F-XXX` branch and opens a PR. Merge to `main` is gated on CI passing and 1 CODEOWNER approval.
