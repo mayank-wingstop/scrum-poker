@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <style>
+      text { font-family: Arial, sans-serif; }
+    </style>
+    <filter id="shadow-md">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.08)"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.05)"/>
+    </filter>
+  </defs>
+  
+  <rect width="900" height="600" fill="#F1F5F9"/>
+  <rect x="225" y="60" width="450" height="460" rx="8" ry="8" fill="#FFFFFF" filter="url(#shadow-md)"/>
+
+    <text x="245" y="118" font-size="28" font-weight="700" fill="#0F172A">🃏 Scrum Poker</text>
+    <text x="245" y="145" font-size="13" fill="#64748B">Estimate together. Reveal at once.</text>
+
+    
+    <text x="245" y="165" font-size="14" font-weight="600" fill="#0F172A">Your display name *</text>
+    <rect x="245" y="175" width="410" height="44" rx="8" ry="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="257" y="202" font-size="14" fill="#0F172A">Alice</text>
+  
+    
+    <text x="245" y="260" font-size="14" font-weight="600" fill="#0F172A">First story title (optional)</text>
+    <rect x="245" y="270" width="410" height="44" rx="8" ry="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="257" y="297" font-size="14" fill="#0F172A">US-101 Login page</text>
+  
+    
+    <rect x="245" y="364" width="410" height="44" rx="8" ry="8" fill="#4F46E5" opacity="1"/>
+    <text x="450" y="391" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Create game</text>
+  
+  
+
+</svg>
