@@ -1,62 +1,62 @@
-name: TADF Implementation Plan Gate
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  trigger-impl-plan:
-    name: Create Implementation Plan Issue
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Detect merged architecture files
-        id: detect
-        run: |
-          CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'specs/3_architecture/F-*.MD' | tr '\n' ' ' | xargs)
-          if [ -z "$CHANGED" ]; then
-            echo "No new architecture files in this push - nothing to do."
-          else
-            echo "Architecture files detected: $CHANGED"
-          fi
-          echo "changed_files=$CHANGED" >> "$GITHUB_OUTPUT"
-
-      - name: Create Implementation Plan Issues
-        if: steps.detect.outputs.changed_files != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          CHANGED: ${{ steps.detect.outputs.changed_files }}
-        run: |
-          for FILE in $CHANGED; do
-            FEATURE_ID=$(basename "$FILE" .MD)
-            BODY="## Implementation Plan Stage Task
-
-**Feature:** ${FEATURE_ID}
-**Agent:** implementation-planner (see .github/agents/implementation-planner.agent.md)
-
-### Instructions
-Read and follow the agent definition in .github/agents/implementation-planner.agent.md exactly.
-
-**Reads:** specs/1_features/${FEATURE_ID}.MD, specs/2_design/${FEATURE_ID}.MD, specs/3_architecture/${FEATURE_ID}.MD
-**Writes:** specs/4_implementation-plan/${FEATURE_ID}.MD, updates specs/INDEX.MD
-
-Open a pull request with your output. Human approval required before merge.
-
----
-Auto-created by TADF stage-gate on merge of ${FILE}."
-
-            gh issue create \
-              --repo "$REPO" \
-              --title "[${FEATURE_ID}] Implementation Plan Stage" \
-              --assignee "mayank-wingstop" \
-              --label "tadf-stage-4" \
-              --body "$BODY"
-          done
+# name: TADF Implementation Plan Gate
+# 
+# on:
+#   push:
+#     branches: [main]
+# 
+# jobs:
+#   trigger-impl-plan:
+#     name: Create Implementation Plan Issue
+#     runs-on: ubuntu-latest
+#     permissions:
+#       issues: write
+#       contents: read
+# 
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 2
+# 
+#       - name: Detect merged architecture files
+#         id: detect
+#         run: |
+#           CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'specs/3_architecture/F-*.MD' | tr '\n' ' ' | xargs)
+#           if [ -z "$CHANGED" ]; then
+#             echo "No new architecture files in this push - nothing to do."
+#           else
+#             echo "Architecture files detected: $CHANGED"
+#           fi
+#           echo "changed_files=$CHANGED" >> "$GITHUB_OUTPUT"
+# 
+#       - name: Create Implementation Plan Issues
+#         if: steps.detect.outputs.changed_files != ''
+#         env:
+#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           REPO: ${{ github.repository }}
+#           CHANGED: ${{ steps.detect.outputs.changed_files }}
+#         run: |
+#           for FILE in $CHANGED; do
+#             FEATURE_ID=$(basename "$FILE" .MD)
+#             BODY="## Implementation Plan Stage Task
+# 
+# **Feature:** ${FEATURE_ID}
+# **Agent:** implementation-planner (see .github/agents/implementation-planner.agent.md)
+# 
+# ### Instructions
+# Read and follow the agent definition in .github/agents/implementation-planner.agent.md exactly.
+# 
+# **Reads:** specs/1_features/${FEATURE_ID}.MD, specs/2_design/${FEATURE_ID}.MD, specs/3_architecture/${FEATURE_ID}.MD
+# **Writes:** specs/4_implementation-plan/${FEATURE_ID}.MD, updates specs/INDEX.MD
+# 
+# Open a pull request with your output. Human approval required before merge.
+# 
+# ---
+# Auto-created by TADF stage-gate on merge of ${FILE}."
+# 
+#             gh issue create \
+#               --repo "$REPO" \
+#               --title "[${FEATURE_ID}] Implementation Plan Stage" \
+#               --assignee "mayank-wingstop" \
+#               --label "tadf-stage-4" \
+#               --body "$BODY"
+#           done
